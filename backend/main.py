@@ -14,6 +14,8 @@ from backend.schemas import (
     CatalogTopResponse,
     ChatRequest,
     ChatResponse,
+    CheckoutRequest,
+    CheckoutResponse,
     ProductOut,
 )
 from backend.sessions import get_session
@@ -109,3 +111,10 @@ def cart_alternative(req: AlternativeRequest):
     return AlternativeResponse(
         alternative=ProductOut(**catalog.to_public(alt, reason="Более дешёвый аналог в той же категории"))
     )
+
+
+@app.post("/api/cart/checkout", response_model=CheckoutResponse)
+def cart_checkout(req: CheckoutRequest):
+    session = get_session(req.session_id)
+    session.cart.clear()
+    return CheckoutResponse(success=True)

@@ -62,7 +62,7 @@ function ChatWindow({ onClose }) {
     ])
 
     try {
-      const { reply, products } = await getCheaperAlternative({ productId: product.id })
+      const { reply, products } = await getCheaperAlternative({ productId: product.id, language })
       replaceTypingWith({ role: 'assistant', text: reply, products })
     } catch {
       replaceTypingWith({ role: 'assistant', text: t.ai.error, isError: true })

@@ -51,3 +51,12 @@ class AlternativeRequest(BaseModel):
 
 class AlternativeResponse(BaseModel):
     alternative: Optional[ProductOut] = None
+
+
+class CheckoutRequest(BaseModel):
+    session_id: str
+    items: Optional[list[dict]] = None
+
+
+class CheckoutResponse(BaseModel):
+    success: bool = True

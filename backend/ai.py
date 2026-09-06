@@ -15,7 +15,7 @@ load_dotenv()
 logger = logging.getLogger("hb-ai")
 
 MODEL = "gemini/gemini-3.5-flash-lite"
-MAX_TOOL_ROUNDS = 6
+MAX_TOOL_ROUNDS = 10
 
 _CATEGORY_LIST = ", ".join(sorted({p["category"] for p in catalog.products}))
 
@@ -29,12 +29,27 @@ SYSTEM_PROMPT = """\
 грубишь в ответ, не переходишь на резкий или холодный тон, не оправдываешься и \
 не споришь. Спокойно продолжай помогать по существу или мягко предложи \
 переформулировать вопрос. Твой тон не зависит от тона клиента.
+
+ПРАВИЛО ФОРМАТИРОВАНИЯ (без исключений): никогда не используй markdown-разметку \
+в тексте ответа — ни звёздочки для жирного (**текст**), ни решётки для \
+заголовков (#, ##), ни другие спецсимволы форматирования (_, `, -, >). Пиши \
+только обычным текстом, как в живом человеческом сообщении. Для перечисления \
+нескольких товаров используй простые предложения или нумерацию словами/цифрами \
+со скобкой, например "1) Название — цена" или просто описывай товары по \
+порядку обычным текстом, без */#/_ разметки.
+
+ПРАВИЛО КРАТКОСТИ: отвечай компактно, ориентир — 3-5 предложений на реплику. \
+Не повторяй одну и ту же мысль разными словами. Урезать полезную информацию \
+(почему товар подходит, важные детали) не нужно — убирай только повторы и воду.
 {greeting_instruction}
 Твоя задача:
 1. Понять проблему/пожелание клиента по коже, волосам или косметике. Если \
    информации мало (не указан тип кожи/волос, для чего нужен продукт, \
    бюджет) — сначала задай 1-2 коротких уточняющих вопроса, не вызывая \
-   инструменты вслепую.
+   инструменты вслепую. Если ты задал НЕСКОЛЬКО уточняющих вопросов сразу, а \
+   клиент в ответе раскрыл только часть из них — не переспрашивай то, что \
+   он уже сказал, и не начинай уточнение заново с нуля. Возьми из истории \
+   диалога то, что уже известно, и мягко доспроси именно недостающую часть.
 2. Когда достаточно понятно, что искать — вызови search_products, чтобы \
    найти подходящие товары из РЕАЛЬНОГО каталога. Никогда не выдумывай \
    товары, цены или бренды — используй только то, что вернули инструменты.
@@ -72,6 +87,18 @@ SYSTEM_PROMPT = """\
    интерфейс клиента показывает карточки товаров ТОЛЬКО из recommend_products, \
    текст сам по себе их не покажет. Если ты просто задаёшь уточняющий вопрос \
    и товары ещё не подобраны — recommend_products вызывать не нужно.
+9. ВАЖНО: если клиент задаёт уточняющий или сравнительный вопрос об УЖЕ \
+   показанных ранее в этом диалоге товарах (например "какой из них лучше?", \
+   "а состав у первого какой?", "а второй подойдёт для..."), и явно НЕ просит \
+   показать другие/новые/ещё товары — отвечай ТОЛЬКО текстом, опираясь на \
+   историю диалога. В этом случае НЕ вызывай search_products и НЕ вызывай \
+   recommend_products — товары уже показаны клиенту в интерфейсе, дублировать \
+   или заменять их не нужно, а у тебя нет надёжного способа точно вспомнить \
+   их id, чтобы не перепутать. Вызывай search_products и recommend_products \
+   заново только если клиент явно просит другие варианты, доп. товары или это \
+   действительно новый запрос. Если всё же вызываешь search_products заново — \
+   собирай recommend_products СТРОГО по товарам и id из этого нового вызова, \
+   а не по данным из более ранних сообщений в истории.
 
 Отвечай только текстом на языке "{language}". Не выдумывай факты о товарах — \
 всё берётся из инструментов.
@@ -209,11 +236,13 @@ class ToolRuntime:
     def __init__(self, session: Session):
         self.session = session
         self.recommended: list[dict] = []
+        self.tools_called: set[str] = set()
 
     def dispatch(self, name: str, args: dict) -> dict:
         handler = getattr(self, f"_tool_{name}", None)
         if handler is None:
             return {"error": f"unknown tool {name}"}
+        self.tools_called.add(name)
         try:
             return handler(args)
         except Exception as exc:  # keep the conversation alive even if a tool blows up
@@ -336,12 +365,27 @@ def run_chat_turn(session: Session, user_message: str, language: str) -> tuple[s
                 "content": json.dumps(result, ensure_ascii=False),
             })
     else:
-        final_text = final_text or "Извините, не получилось сформировать ответ. Попробуйте переформулировать вопрос."
+        # Ran out of MAX_TOOL_ROUNDS without a final plain-text turn. If
+        # recommend_products already fired on an earlier round this turn,
+        # there are real products to show - say something neutral instead of
+        # a blanket apology that reads as a failure when it isn't one.
+        if runtime.recommended:
+            final_text = final_text or (
+                "Вот что удалось подобрать:" if language != "tj"
+                else "Инак чизҳое, ки барои шумо ёфтам:"
+            )
+        else:
+            final_text = final_text or (
+                "Извините, не получилось сформировать ответ. Попробуйте переформулировать вопрос."
+                if language != "tj"
+                else "Мебахшед, ҷавоб тайёр нашуд. Лутфан саволро дигар хел нависед."
+            )
 
     if not final_text:
         final_text = "Хорошо!" if not runtime.recommended else "Вот что удалось подобрать:"
 
-    if not runtime.recommended and _mentions_products(final_text):
+    fresh_search_this_turn = bool(runtime.tools_called & {"search_products", "find_cheaper_alternative"})
+    if not runtime.recommended and fresh_search_this_turn and _mentions_products(final_text):
         _force_recommend_products(messages, runtime)
 
     session.history.append({"role": "assistant", "content": final_text})
@@ -356,7 +400,14 @@ def _force_recommend_products(messages: list[dict], runtime: "ToolRuntime") -> N
     """Self-healing pass: the model described products in prose but forgot to
     call recommend_products, so the frontend would get an empty products list
     even though the reply text clearly names some. Ask it once more, forcing
-    the tool call, using the same conversation state it already produced."""
+    the tool call, using the same conversation state it already produced.
+
+    Only ever called when this turn actually ran search_products or
+    find_cheaper_alternative (see fresh_search_this_turn in run_chat_turn) -
+    otherwise the model has no fresh product ids to draw on and, forced to
+    call the tool anyway, ends up guessing ids/reasons that don't match what
+    was actually shown (this is what caused the mismatched-reason bug on
+    plain follow-up/comparison questions about already-shown products)."""
     nudge_messages = messages + [{
         "role": "user",
         "content": (

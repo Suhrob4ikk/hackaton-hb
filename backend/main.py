@@ -1,11 +1,12 @@
 import logging
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend import auth, purchases
 from backend.ai import run_chat_turn
-from backend.catalog import catalog, estimate_depletion
+from backend.catalog import catalog, estimate_depletion, estimate_depletion_days
 from backend.schemas import (
     AdminUserOut,
     AdminUsersResponse,
@@ -68,6 +69,8 @@ def build_purchase_history(email: str) -> PurchaseHistoryResponse:
         product = catalog.get(record["product_id"])
         if not product:
             continue
+        purchased_at = datetime.fromisoformat(record["purchased_at"])
+        days_since = (datetime.now(timezone.utc) - purchased_at).days
         items.append(PurchaseOut(
             id=product["id"],
             title=product["title"],
@@ -77,6 +80,8 @@ def build_purchase_history(email: str) -> PurchaseHistoryResponse:
             quantity=record["quantity"],
             purchased_at=record["purchased_at"],
             depletion_estimate=estimate_depletion(product["category"], product.get("volume")),
+            depletion_days=estimate_depletion_days(product["category"], product.get("volume")),
+            days_since_purchase=max(days_since, 0),
         ))
     items.sort(key=lambda p: p.purchased_at, reverse=True)
     return PurchaseHistoryResponse(purchases=items)

@@ -53,7 +53,10 @@ def format_volume(volume: dict | None) -> str | None:
     return f"{value} {unit}"
 
 
-def estimate_depletion(category: str, volume: dict | None) -> str | None:
+def estimate_depletion_days(category: str, volume: dict | None) -> int | None:
+    """Raw day count behind estimate_depletion()'s text - used where the
+    number itself is needed (e.g. Phase 5's "running low" notifications),
+    without duplicating the lookup/scaling logic."""
     category_lower = (category or "").lower()
     for keyword, rule in DEPLETION_RULES:
         if keyword in category_lower:
@@ -70,7 +73,13 @@ def estimate_depletion(category: str, volume: dict | None) -> str | None:
             days = round(base_days * (float(volume["value"]) / reference))
         except (TypeError, ZeroDivisionError):
             days = base_days
-    days = max(days, 7)
+    return max(days, 7)
+
+
+def estimate_depletion(category: str, volume: dict | None) -> str | None:
+    days = estimate_depletion_days(category, volume)
+    if days is None:
+        return None
 
     if days < 45:
         text = f"~{days} дней"

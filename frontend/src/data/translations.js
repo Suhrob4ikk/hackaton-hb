@@ -131,6 +131,11 @@ const translations = {
       depletionLabel: 'Хватит примерно',
       loading: 'Загружаем...',
       loadError: 'Не удалось загрузить историю покупок',
+      notifications: 'Уведомления',
+      notificationsEmpty: 'Пока нет уведомлений',
+      simulate24h: 'Симулировать: прошло 24 часа',
+      cartReminder: 'Не забудьте оформить заказ — в корзине есть неоплаченные товары',
+      depletionWarning: '{title} скоро закончится',
     },
   },
   tj: {
@@ -262,6 +267,11 @@ const translations = {
       depletionLabel: 'Тахминан кофӣ аст',
       loading: 'Боргирӣ...',
       loadError: 'Таърихи харидҳоро бор карда натавонист',
+      notifications: 'Огоҳиномаҳо',
+      notificationsEmpty: 'То ҳол огоҳинома нест',
+      simulate24h: 'Шабеҳсозӣ: 24 соат гузашт',
+      cartReminder: 'Фаромӯш накунед фармоишро расмият диҳед — дар сабад маҳсулот боқӣ мондааст',
+      depletionWarning: '{title} ба зудӣ тамом мешавад',
     },
   },
 }

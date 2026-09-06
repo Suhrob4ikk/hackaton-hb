@@ -1,10 +1,16 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { useCart } from '../../context/CartContext.jsx'
 import { apiGetPurchases } from '../../services/api.js'
 import { gradientForId } from '../../utils/placeholderColor.js'
-import { IconClose } from '../icons/Icons.jsx'
+import { IconClose, IconBell } from '../icons/Icons.jsx'
 import styles from './AccountPanel.module.css'
+
+// A product counts as "running low" once it's used up roughly 80% of its
+// estimated lifespan (see backend/catalog.py's estimate_depletion). This is
+// a simulated notification for the demo, not a precise prediction.
+const RUNNING_LOW_THRESHOLD = 0.8
 
 function formatDate(isoString, locale) {
   try {
@@ -21,8 +27,23 @@ function formatDate(isoString, locale) {
 function AccountPanel() {
   const { t, language } = useLanguage()
   const { isAccountOpen, closeAccount, user, logout } = useAuth()
+  const { totalCount: cartTotalCount } = useCart()
   const [purchases, setPurchases] = useState([])
   const [status, setStatus] = useState('idle') // idle | loading | ready | error
+  const [simulate24h, setSimulate24h] = useState(false)
+
+  const notifications = useMemo(() => {
+    const list = []
+    if (simulate24h && cartTotalCount > 0) {
+      list.push({ id: 'cart-reminder', text: t.account.cartReminder })
+    }
+    for (const item of purchases) {
+      if (item.depletion_days && item.days_since_purchase >= item.depletion_days * RUNNING_LOW_THRESHOLD) {
+        list.push({ id: `depletion-${item.id}`, text: t.account.depletionWarning.replace('{title}', item.title) })
+      }
+    }
+    return list
+  }, [simulate24h, cartTotalCount, purchases, t])
 
   useEffect(() => {
     if (!isAccountOpen || !user) return
@@ -72,6 +93,28 @@ function AccountPanel() {
             </button>
           </div>
         )}
+
+        <div className={styles.notificationsHeader}>
+          <h3 className={styles.sectionTitleInline}>
+            <IconBell width={16} height={16} />
+            {t.account.notifications}
+            {notifications.length > 0 && <span className={styles.notificationsBadge}>{notifications.length}</span>}
+          </h3>
+          <label className={styles.simulateToggle}>
+            <input type="checkbox" checked={simulate24h} onChange={(e) => setSimulate24h(e.target.checked)} />
+            {t.account.simulate24h}
+          </label>
+        </div>
+
+        <div className={styles.notificationsList}>
+          {notifications.length === 0 ? (
+            <p className={styles.status}>{t.account.notificationsEmpty}</p>
+          ) : (
+            notifications.map((n) => (
+              <p key={n.id} className={styles.notificationItem}>{n.text}</p>
+            ))
+          )}
+        </div>
 
         <h3 className={styles.sectionTitle}>{t.account.purchaseHistory}</h3>
 

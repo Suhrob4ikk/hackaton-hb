@@ -89,6 +89,8 @@ class PurchaseOut(BaseModel):
     quantity: int
     purchased_at: str
     depletion_estimate: Optional[str] = None
+    depletion_days: Optional[int] = None
+    days_since_purchase: int = 0
 
 
 class PurchaseHistoryResponse(BaseModel):

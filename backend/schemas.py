@@ -60,5 +60,11 @@ class CheckoutRequest(BaseModel):
 
 class CheckoutResponse(BaseModel):
     success: bool = True
+    order_id: Optional[str] = None
+    total: Optional[float] = None
+    items: Optional[list[CartItemOut]] = None
+    created_at: Optional[str] = None
+
+
 class CatalogTopResponse(BaseModel):
     groups: dict[str, list[ProductOut]]

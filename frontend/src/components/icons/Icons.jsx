@@ -166,6 +166,36 @@ export function IconPerfume(props) {
   )
 }
 
+export function IconDocument(props) {
+  return (
+    <svg {...base(props)}>
+      <path d="M7 3.5h7l3.5 3.5V20a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z" />
+      <path d="M14 3.5V7a1 1 0 0 0 1 1h3.5" />
+      <path d="M8.7 12.5h6.6M8.7 15.5h6.6M8.7 18h4" />
+    </svg>
+  )
+}
+
+export function IconDownload(props) {
+  return (
+    <svg {...base(props)}>
+      <path d="M12 3.5v11" />
+      <path d="M7.5 10.5 12 15l4.5-4.5" />
+      <path d="M5 17.5V19a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.5" />
+    </svg>
+  )
+}
+
+export function IconLanguage(props) {
+  return (
+    <svg {...base(props)}>
+      <circle cx="12" cy="12" r="8.5" />
+      <path d="M3.5 12h17" />
+      <path d="M12 3.5c2.2 2.3 3.4 5.3 3.4 8.5s-1.2 6.2-3.4 8.5c-2.2-2.3-3.4-5.3-3.4-8.5S9.8 5.8 12 3.5Z" />
+    </svg>
+  )
+}
+
 export function IconRobot(props) {
   return (
     <svg {...base(props)}>

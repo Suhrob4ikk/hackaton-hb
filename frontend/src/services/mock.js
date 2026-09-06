@@ -43,9 +43,29 @@ export async function mockAddToCart() {
   return { success: true }
 }
 
-export async function mockCheckout() {
+export async function mockCheckout({ items }) {
   await delay(900)
-  return { success: true }
+  const total = items.reduce((sum, item) => sum + item.quantity * item.product.price, 0)
+  return {
+    success: true,
+    order_id: `HB-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 90000) + 10000)}`,
+    total: Math.round(total * 100) / 100,
+    items: items.map(({ product, quantity }) => ({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      volume: product.volume ?? null,
+      image_url: product.image_url ?? null,
+      quantity,
+      subtotal: Math.round(product.price * quantity * 100) / 100,
+    })),
+    created_at: new Date().toISOString(),
+  }
+}
+
+export async function mockGetOrderInstructionsBlob() {
+  await delay(500)
+  throw new Error('PDF instructions are only available when the backend is connected.')
 }
 
 export async function mockGetCatalogTop() {

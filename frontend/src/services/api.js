@@ -50,3 +50,13 @@ export function apiCheckout(payload) {
 export function apiGetCatalogTop({ limit = 8 } = {}) {
   return request(`/api/catalog/top?limit=${encodeURIComponent(limit)}`)
 }
+
+export async function apiGetOrderInstructionsBlob({ session_id, language }) {
+  const response = await fetch(
+    `${API_BASE_URL}/api/order/instructions?session_id=${encodeURIComponent(session_id)}&language=${encodeURIComponent(language)}`,
+  )
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status}`)
+  }
+  return response.blob()
+}

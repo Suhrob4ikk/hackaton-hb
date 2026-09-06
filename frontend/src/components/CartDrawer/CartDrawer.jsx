@@ -1,7 +1,7 @@
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { useCart } from '../../context/CartContext.jsx'
 import { gradientForId } from '../../utils/placeholderColor.js'
-import { IconClose, IconMinus, IconPlus, IconTrash } from '../icons/Icons.jsx'
+import { IconCheck, IconClose, IconMinus, IconPlus, IconTrash } from '../icons/Icons.jsx'
 import styles from './CartDrawer.module.css'
 
 function CartDrawer() {
@@ -12,10 +12,14 @@ function CartDrawer() {
     closeDrawer,
     updateQuantity,
     removeItem,
-    checkout,
+    isReviewing,
+    startCheckout,
+    cancelCheckout,
+    confirmOrder,
     isCheckingOut,
     orderSuccess,
     resetOrderSuccess,
+    lastOrder,
     totalCount,
     totalPrice,
   } = useCart()
@@ -23,6 +27,7 @@ function CartDrawer() {
   function handleClose() {
     closeDrawer()
     if (orderSuccess) resetOrderSuccess()
+    if (isReviewing) cancelCheckout()
   }
 
   return (
@@ -38,7 +43,9 @@ function CartDrawer() {
         aria-hidden={!isDrawerOpen}
       >
         <div className={styles.header}>
-          <h2 className={styles.title}>{t.cart.title}</h2>
+          <h2 className={styles.title}>
+            {orderSuccess ? t.cart.title : isReviewing ? t.cart.checkoutReviewTitle : t.cart.title}
+          </h2>
           <button type="button" className={styles.closeButton} aria-label={t.cart.close} onClick={handleClose}>
             <IconClose width={18} height={18} />
           </button>
@@ -46,8 +53,20 @@ function CartDrawer() {
 
         {orderSuccess ? (
           <div className={styles.success}>
+            <span className={styles.successIcon} aria-hidden="true">
+              <IconCheck width={26} height={26} />
+            </span>
             <h3 className={styles.successTitle}>{t.cart.successTitle}</h3>
             <p className={styles.successText}>{t.cart.successText}</p>
+            {lastOrder && (
+              <div className={styles.successMeta}>
+                <span className={styles.successOrderId}>#{lastOrder.id}</span>
+                <span className={styles.successTotal}>
+                  {lastOrder.total} {t.cart.currency}
+                </span>
+              </div>
+            )}
+            <p className={styles.instructionsHint}>{t.cart.instructionsHint}</p>
             <button type="button" className={styles.continueButton} onClick={handleClose}>
               {t.cart.continueShopping}
             </button>
@@ -82,6 +101,7 @@ function CartDrawer() {
                         className={styles.qtyButton}
                         aria-label="-"
                         onClick={() => updateQuantity(product.id, quantity - 1)}
+                        disabled={isReviewing}
                       >
                         <IconMinus width={12} height={12} />
                       </button>
@@ -91,6 +111,7 @@ function CartDrawer() {
                         className={styles.qtyButton}
                         aria-label="+"
                         onClick={() => updateQuantity(product.id, quantity + 1)}
+                        disabled={isReviewing}
                       >
                         <IconPlus width={12} height={12} />
                       </button>
@@ -99,6 +120,7 @@ function CartDrawer() {
                         className={styles.removeButton}
                         aria-label={t.cart.remove}
                         onClick={() => removeItem(product.id)}
+                        disabled={isReviewing}
                       >
                         <IconTrash width={15} height={15} />
                       </button>
@@ -117,14 +139,31 @@ function CartDrawer() {
                   {totalPrice} {t.cart.currency}
                 </span>
               </div>
-              <button
-                type="button"
-                className={styles.checkoutButton}
-                onClick={checkout}
-                disabled={isCheckingOut}
-              >
-                {isCheckingOut ? t.cart.checkingOut : t.cart.checkout}
-              </button>
+              {isReviewing ? (
+                <>
+                  <button
+                    type="button"
+                    className={styles.checkoutButton}
+                    onClick={confirmOrder}
+                    disabled={isCheckingOut}
+                  >
+                    {isCheckingOut ? t.cart.confirmingOrder : t.cart.confirmOrder}
+                  </button>
+                  <p className={styles.demoDisclaimer}>{t.cart.demoDisclaimer}</p>
+                  <button
+                    type="button"
+                    className={styles.backLink}
+                    onClick={cancelCheckout}
+                    disabled={isCheckingOut}
+                  >
+                    {t.cart.backToCart}
+                  </button>
+                </>
+              ) : (
+                <button type="button" className={styles.checkoutButton} onClick={startCheckout}>
+                  {t.cart.checkout}
+                </button>
+              )}
             </div>
           </>
         )}

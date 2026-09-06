@@ -1,13 +1,37 @@
-import { createContext, useContext, useMemo, useState, useCallback } from 'react'
+import { createContext, useContext, useMemo, useState, useCallback, useEffect, useRef } from 'react'
 import * as cartService from '../services/cartService.js'
 
 const CartContext = createContext(null)
+const LAST_ORDER_KEY = 'hb_last_order'
+const AUTO_CLOSE_DELAY = 1800
+
+function readPersistedOrder() {
+  try {
+    const raw = localStorage.getItem(LAST_ORDER_KEY)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+function persistOrder(order) {
+  try {
+    localStorage.setItem(LAST_ORDER_KEY, JSON.stringify(order))
+  } catch {
+    // storage unavailable (private mode, quota, etc.) — order still lives in memory
+  }
+}
 
 export function CartProvider({ children }) {
   const [items, setItems] = useState([])
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [isReviewing, setIsReviewing] = useState(false)
   const [isCheckingOut, setIsCheckingOut] = useState(false)
   const [orderSuccess, setOrderSuccess] = useState(false)
+  const [lastOrder, setLastOrder] = useState(readPersistedOrder)
+  const autoCloseTimerRef = useRef(null)
+
+  useEffect(() => () => clearTimeout(autoCloseTimerRef.current), [])
 
   const addItem = useCallback((product, quantity = 1) => {
     setItems((prev) => {
@@ -38,18 +62,44 @@ export function CartProvider({ children }) {
   const closeDrawer = useCallback(() => setIsDrawerOpen(false), [])
   const toggleDrawer = useCallback(() => setIsDrawerOpen((prev) => !prev), [])
 
-  const checkout = useCallback(async () => {
+  const startCheckout = useCallback(() => {
+    setIsReviewing((prev) => prev || items.length > 0)
+  }, [items.length])
+
+  const cancelCheckout = useCallback(() => setIsReviewing(false), [])
+
+  const confirmOrder = useCallback(async () => {
+    if (items.length === 0) return
     setIsCheckingOut(true)
     try {
-      await cartService.checkout({ items })
+      const response = await cartService.checkout({ items })
+      const order = {
+        id: response.order_id,
+        items: response.items ?? items.map(({ product, quantity }) => ({ ...product, quantity })),
+        total: response.total ?? items.reduce((sum, item) => sum + item.quantity * item.product.price, 0),
+        createdAt: response.created_at ?? new Date().toISOString(),
+        status: 'completed',
+      }
+      setLastOrder(order)
+      persistOrder(order)
+      setIsReviewing(false)
       setOrderSuccess(true)
       setItems([])
+
+      clearTimeout(autoCloseTimerRef.current)
+      autoCloseTimerRef.current = setTimeout(() => {
+        setIsDrawerOpen(false)
+        setOrderSuccess(false)
+      }, AUTO_CLOSE_DELAY)
     } finally {
       setIsCheckingOut(false)
     }
   }, [items])
 
-  const resetOrderSuccess = useCallback(() => setOrderSuccess(false), [])
+  const resetOrderSuccess = useCallback(() => {
+    clearTimeout(autoCloseTimerRef.current)
+    setOrderSuccess(false)
+  }, [])
 
   const totalCount = items.reduce((sum, item) => sum + item.quantity, 0)
   const totalPrice = items.reduce((sum, item) => sum + item.quantity * item.product.price, 0)
@@ -64,10 +114,14 @@ export function CartProvider({ children }) {
       openDrawer,
       closeDrawer,
       toggleDrawer,
-      checkout,
+      isReviewing,
+      startCheckout,
+      cancelCheckout,
+      confirmOrder,
       isCheckingOut,
       orderSuccess,
       resetOrderSuccess,
+      lastOrder,
       totalCount,
       totalPrice,
     }),
@@ -80,10 +134,14 @@ export function CartProvider({ children }) {
       openDrawer,
       closeDrawer,
       toggleDrawer,
-      checkout,
+      isReviewing,
+      startCheckout,
+      cancelCheckout,
+      confirmOrder,
       isCheckingOut,
       orderSuccess,
       resetOrderSuccess,
+      lastOrder,
       totalCount,
       totalPrice,
     ],

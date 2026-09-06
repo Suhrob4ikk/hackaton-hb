@@ -5,6 +5,7 @@ import Categories from '../../components/Categories/Categories.jsx'
 import Footer from '../../components/Footer/Footer.jsx'
 import AIConsultantWidget from '../../components/AIConsultant/AIConsultantWidget.jsx'
 import CartDrawer from '../../components/CartDrawer/CartDrawer.jsx'
+import AuthModal from '../../components/AuthModal/AuthModal.jsx'
 
 function Home() {
   return (
@@ -18,6 +19,7 @@ function Home() {
       <Footer />
       <AIConsultantWidget />
       <CartDrawer />
+      <AuthModal />
     </div>
   )
 }

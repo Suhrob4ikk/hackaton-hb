@@ -60,3 +60,20 @@ class CheckoutRequest(BaseModel):
 
 class CheckoutResponse(BaseModel):
     success: bool = True
+
+
+class RegisterRequest(BaseModel):
+    email: str
+    password: str
+    name: str
+
+
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+
+class AuthResponse(BaseModel):
+    token: str
+    email: str
+    name: str

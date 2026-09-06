@@ -1,5 +1,6 @@
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { useCart } from '../../context/CartContext.jsx'
+import { useAuth } from '../../context/AuthContext.jsx'
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher.jsx'
 import { IconSearch, IconCart, IconUser } from '../icons/Icons.jsx'
 import styles from './Header.module.css'
@@ -7,6 +8,7 @@ import styles from './Header.module.css'
 function Header() {
   const { t } = useLanguage()
   const { totalCount, toggleDrawer } = useCart()
+  const { isLoggedIn, user, openModal } = useAuth()
 
   const navItems = [
     { key: 'home', label: t.nav.home, href: '#top', active: true },
@@ -55,8 +57,15 @@ function Header() {
             <IconCart />
             {totalCount > 0 && <span className={styles.cartBadge}>{totalCount}</span>}
           </button>
-          <button type="button" className={styles.iconButton} aria-label={t.header.profile}>
+          <button
+            type="button"
+            className={styles.iconButton}
+            aria-label={isLoggedIn ? `${t.auth.loggedInAs} ${user.name}` : t.header.profile}
+            title={isLoggedIn ? `${t.auth.loggedInAs} ${user.name}` : undefined}
+            onClick={openModal}
+          >
             <IconUser />
+            {isLoggedIn && <span className={styles.cartBadge} aria-hidden="true" />}
           </button>
         </div>
       </div>

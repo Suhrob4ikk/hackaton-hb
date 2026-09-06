@@ -9,7 +9,16 @@ async function request(path, options = {}) {
   })
 
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`)
+    // Best-effort: surface the backend's {detail} message (used by the auth
+    // endpoints for things like "email already registered") when present,
+    // without changing behavior for callers that don't inspect it.
+    let detail = null
+    try {
+      detail = (await response.json())?.detail ?? null
+    } catch {
+      // response body wasn't JSON - fall back to the generic message below
+    }
+    throw new Error(detail || `API request failed: ${response.status}`)
   }
 
   return response.json()
@@ -42,6 +51,20 @@ export function apiGetCart(sessionId) {
 
 export function apiCheckout(payload) {
   return request('/api/cart/checkout', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function apiRegister(payload) {
+  return request('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  })
+}
+
+export function apiLogin(payload) {
+  return request('/api/auth/login', {
     method: 'POST',
     body: JSON.stringify(payload),
   })

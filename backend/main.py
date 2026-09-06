@@ -3,11 +3,13 @@ import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend import auth
 from backend.ai import run_chat_turn
 from backend.catalog import catalog
 from backend.schemas import (
     AlternativeRequest,
     AlternativeResponse,
+    AuthResponse,
     CartAddRequest,
     CartItemOut,
     CartResponse,
@@ -15,7 +17,9 @@ from backend.schemas import (
     ChatResponse,
     CheckoutRequest,
     CheckoutResponse,
+    LoginRequest,
     ProductOut,
+    RegisterRequest,
 )
 from backend.sessions import get_session
 
@@ -111,3 +115,21 @@ def cart_checkout(req: CheckoutRequest):
     session = get_session(req.session_id)
     session.cart.clear()
     return CheckoutResponse(success=True)
+
+
+@app.post("/api/auth/register", response_model=AuthResponse)
+def auth_register(req: RegisterRequest):
+    try:
+        result = auth.register(req.email, req.password, req.name)
+    except auth.AuthError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return AuthResponse(**result)
+
+
+@app.post("/api/auth/login", response_model=AuthResponse)
+def auth_login(req: LoginRequest):
+    try:
+        result = auth.login(req.email, req.password)
+    except auth.AuthError as exc:
+        raise HTTPException(status_code=401, detail=str(exc))
+    return AuthResponse(**result)

@@ -1,5 +1,6 @@
 data/*.xlsx
 data/users.json
+data/purchases.json
 .env
 __pycache__/
 *.pyc

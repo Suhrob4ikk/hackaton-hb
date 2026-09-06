@@ -122,6 +122,16 @@ const translations = {
       logout: 'Выйти',
       account: 'Личный кабинет',
     },
+    account: {
+      title: 'Личный кабинет',
+      purchaseHistory: 'История покупок',
+      empty: 'Пока нет покупок',
+      quantity: 'Кол-во',
+      purchasedOn: 'Куплено',
+      depletionLabel: 'Хватит примерно',
+      loading: 'Загружаем...',
+      loadError: 'Не удалось загрузить историю покупок',
+    },
   },
   tj: {
     lang: { ru: 'РУС', tj: 'ТҶ' },
@@ -242,6 +252,16 @@ const translations = {
       loggedInAs: 'Шумо ворид шудед ҳамчун',
       logout: 'Баромадан',
       account: 'Ҳисоби шахсӣ',
+    },
+    account: {
+      title: 'Ҳисоби шахсӣ',
+      purchaseHistory: 'Таърихи харидҳо',
+      empty: 'То ҳол харид нест',
+      quantity: 'Миқдор',
+      purchasedOn: 'Харидашуда',
+      depletionLabel: 'Тахминан кофӣ аст',
+      loading: 'Боргирӣ...',
+      loadError: 'Таърихи харидҳоро бор карда натавонист',
     },
   },
 }

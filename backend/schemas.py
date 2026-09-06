@@ -77,3 +77,18 @@ class AuthResponse(BaseModel):
     token: str
     email: str
     name: str
+
+
+class PurchaseOut(BaseModel):
+    id: str
+    title: str
+    price: float
+    volume: Optional[str] = None
+    image_url: Optional[str] = None
+    quantity: int
+    purchased_at: str
+    depletion_estimate: Optional[str] = None
+
+
+class PurchaseHistoryResponse(BaseModel):
+    purchases: list[PurchaseOut]

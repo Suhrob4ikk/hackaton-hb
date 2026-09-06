@@ -3,9 +3,9 @@ import logging
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
-from backend import auth
+from backend import auth, purchases
 from backend.ai import run_chat_turn
-from backend.catalog import catalog
+from backend.catalog import catalog, estimate_depletion
 from backend.schemas import (
     AlternativeRequest,
     AlternativeResponse,
@@ -19,6 +19,8 @@ from backend.schemas import (
     CheckoutResponse,
     LoginRequest,
     ProductOut,
+    PurchaseHistoryResponse,
+    PurchaseOut,
     RegisterRequest,
 )
 from backend.sessions import get_session
@@ -55,6 +57,27 @@ def build_cart_response(session) -> CartResponse:
             subtotal=subtotal,
         ))
     return CartResponse(cart=items, total=round(total, 2))
+
+
+def build_purchase_history(email: str) -> PurchaseHistoryResponse:
+    records = purchases.get_purchases(email)
+    items = []
+    for record in records:
+        product = catalog.get(record["product_id"])
+        if not product:
+            continue
+        items.append(PurchaseOut(
+            id=product["id"],
+            title=product["title"],
+            price=product["price"],
+            volume=catalog.to_public(product)["volume"],
+            image_url=(product.get("images") or [None])[0],
+            quantity=record["quantity"],
+            purchased_at=record["purchased_at"],
+            depletion_estimate=estimate_depletion(product["category"], product.get("volume")),
+        ))
+    items.sort(key=lambda p: p.purchased_at, reverse=True)
+    return PurchaseHistoryResponse(purchases=items)
 
 
 @app.post("/api/chat", response_model=ChatResponse)
@@ -133,3 +156,10 @@ def auth_login(req: LoginRequest):
     except auth.AuthError as exc:
         raise HTTPException(status_code=401, detail=str(exc))
     return AuthResponse(**result)
+
+
+@app.get("/api/account/purchases", response_model=PurchaseHistoryResponse)
+def account_purchases(token: str):
+    if not auth.get_user(token):
+        raise HTTPException(status_code=401, detail="Не авторизован")
+    return build_purchase_history(token)

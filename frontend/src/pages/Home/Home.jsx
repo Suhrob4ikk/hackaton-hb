@@ -6,6 +6,7 @@ import Footer from '../../components/Footer/Footer.jsx'
 import AIConsultantWidget from '../../components/AIConsultant/AIConsultantWidget.jsx'
 import CartDrawer from '../../components/CartDrawer/CartDrawer.jsx'
 import AuthModal from '../../components/AuthModal/AuthModal.jsx'
+import AccountPanel from '../../components/AccountPanel/AccountPanel.jsx'
 
 function Home() {
   return (
@@ -20,6 +21,7 @@ function Home() {
       <AIConsultantWidget />
       <CartDrawer />
       <AuthModal />
+      <AccountPanel />
     </div>
   )
 }

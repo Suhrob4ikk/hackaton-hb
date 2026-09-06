@@ -69,3 +69,7 @@ export function apiLogin(payload) {
     body: JSON.stringify(payload),
   })
 }
+
+export function apiGetPurchases(token) {
+  return request(`/api/account/purchases?token=${encodeURIComponent(token)}`)
+}

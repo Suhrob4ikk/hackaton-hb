@@ -17,6 +17,7 @@ function readStoredUser() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(readStoredUser)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAccountOpen, setIsAccountOpen] = useState(false)
 
   const persist = useCallback((nextUser) => {
     setUser(nextUser)
@@ -39,14 +40,31 @@ export function AuthProvider({ children }) {
     return result
   }, [persist])
 
-  const logout = useCallback(() => persist(null), [persist])
+  const logout = useCallback(() => {
+    persist(null)
+    setIsAccountOpen(false)
+  }, [persist])
 
   const openModal = useCallback(() => setIsModalOpen(true), [])
   const closeModal = useCallback(() => setIsModalOpen(false), [])
+  const openAccount = useCallback(() => setIsAccountOpen(true), [])
+  const closeAccount = useCallback(() => setIsAccountOpen(false), [])
 
   const value = useMemo(
-    () => ({ user, isLoggedIn: Boolean(user), register, login, logout, isModalOpen, openModal, closeModal }),
-    [user, register, login, logout, isModalOpen, openModal, closeModal],
+    () => ({
+      user,
+      isLoggedIn: Boolean(user),
+      register,
+      login,
+      logout,
+      isModalOpen,
+      openModal,
+      closeModal,
+      isAccountOpen,
+      openAccount,
+      closeAccount,
+    }),
+    [user, register, login, logout, isModalOpen, openModal, closeModal, isAccountOpen, openAccount, closeAccount],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

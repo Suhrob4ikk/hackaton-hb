@@ -8,7 +8,7 @@ import styles from './Header.module.css'
 function Header() {
   const { t } = useLanguage()
   const { totalCount, toggleDrawer } = useCart()
-  const { isLoggedIn, user, openModal } = useAuth()
+  const { isLoggedIn, user, openModal, openAccount } = useAuth()
 
   const navItems = [
     { key: 'home', label: t.nav.home, href: '#top', active: true },
@@ -62,7 +62,7 @@ function Header() {
             className={styles.iconButton}
             aria-label={isLoggedIn ? `${t.auth.loggedInAs} ${user.name}` : t.header.profile}
             title={isLoggedIn ? `${t.auth.loggedInAs} ${user.name}` : undefined}
-            onClick={openModal}
+            onClick={isLoggedIn ? openAccount : openModal}
           >
             <IconUser />
             {isLoggedIn && <span className={styles.cartBadge} aria-hidden="true" />}

@@ -93,3 +93,13 @@ class PurchaseOut(BaseModel):
 
 class PurchaseHistoryResponse(BaseModel):
     purchases: list[PurchaseOut]
+
+
+class AdminUserOut(BaseModel):
+    email: str
+    name: str
+    purchases: list[PurchaseOut]
+
+
+class AdminUsersResponse(BaseModel):
+    users: list[AdminUserOut]

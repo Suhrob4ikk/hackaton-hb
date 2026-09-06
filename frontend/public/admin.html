@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>HAYAT BEAUTY — Админ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --pink: #ec4899;
+      --purple: #8b5cf6;
+      --ink: #241f38;
+      --body: #6c6579;
+      --border: #f0e6ec;
+      --bg-soft: #fdf2f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #fffdfc;
+      color: var(--ink);
+      padding: 32px;
+    }
+    h1 {
+      font-size: 22px;
+      margin: 0 0 4px;
+    }
+    .subtitle {
+      color: var(--body);
+      font-size: 14px;
+      margin: 0 0 24px;
+    }
+    .status {
+      color: var(--body);
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(120, 60, 110, 0.06);
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13.5px;
+      vertical-align: top;
+    }
+    th {
+      background: var(--bg-soft);
+      font-weight: 600;
+      color: var(--body);
+    }
+    tr:last-child td {
+      border-bottom: none;
+    }
+    .purchase-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .purchase-item {
+      display: flex;
+      flex-direction: column;
+    }
+    .purchase-title {
+      font-weight: 600;
+    }
+    .purchase-meta {
+      color: var(--body);
+      font-size: 12px;
+    }
+    .empty {
+      color: var(--body);
+      font-style: italic;
+    }
+    .error {
+      color: #b3261e;
+      background: #fdecec;
+      padding: 12px 14px;
+      border-radius: 8px;
+    }
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+      border-radius: 999px;
+      padding: 1px 9px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Пользователи HAYAT BEAUTY<span class="badge">admin</span></h1>
+  <p class="subtitle">Простой список для демо — без авторизации.</p>
+  <div id="content" class="status">Загружаем...</div>
+
+  <script>
+    const API_BASE = new URLSearchParams(location.search).get('api') || 'http://127.0.0.1:8000'
+
+    function escapeHtml(str) {
+      const div = document.createElement('div')
+      div.textContent = str ?? ''
+      return div.innerHTML
+    }
+
+    function formatDate(iso) {
+      try {
+        return new Date(iso).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      } catch {
+        return iso
+      }
+    }
+
+    function renderPurchases(purchases) {
+      if (!purchases.length) {
+        return '<span class="empty">Покупок нет</span>'
+      }
+      return '<ul class="purchase-list">' + purchases.map((p) => `
+        <li class="purchase-item">
+          <span class="purchase-title">${escapeHtml(p.title)} × ${p.quantity}</span>
+          <span class="purchase-meta">${p.price} сомони · ${formatDate(p.purchased_at)}${p.depletion_estimate ? ' · хватит ' + escapeHtml(p.depletion_estimate) : ''}</span>
+        </li>
+      `).join('') + '</ul>'
+    }
+
+    async function load() {
+      const el = document.getElementById('content')
+      try {
+        const res = await fetch(`${API_BASE}/api/admin/users`)
+        if (!res.ok) throw new Error(`API request failed: ${res.status}`)
+        const data = await res.json()
+
+        if (!data.users.length) {
+          el.innerHTML = '<p class="empty">Пока никто не зарегистрирован.</p>'
+          return
+        }
+
+        el.innerHTML = `
+          <table>
+            <thead>
+              <tr><th>Имя</th><th>Email</th><th>Покупки</th></tr>
+            </thead>
+            <tbody>
+              ${data.users.map((u) => `
+                <tr>
+                  <td>${escapeHtml(u.name)}</td>
+                  <td>${escapeHtml(u.email)}</td>
+                  <td>${renderPurchases(u.purchases)}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        `
+      } catch (err) {
+        el.innerHTML = `<p class="error">Не удалось загрузить пользователей: ${escapeHtml(err.message)}. Проверьте, что бэкенд запущен на ${escapeHtml(API_BASE)} (можно указать другой адрес через ?api=...).</p>`
+      }
+    }
+
+    load()
+  </script>
+</body>
+</html>

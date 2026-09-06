@@ -7,6 +7,8 @@ from backend import auth, purchases
 from backend.ai import run_chat_turn
 from backend.catalog import catalog, estimate_depletion
 from backend.schemas import (
+    AdminUserOut,
+    AdminUsersResponse,
     AlternativeRequest,
     AlternativeResponse,
     AuthResponse,
@@ -168,3 +170,12 @@ def account_purchases(token: str):
     if not auth.get_user(token):
         raise HTTPException(status_code=401, detail="Не авторизован")
     return build_purchase_history(token)
+
+
+@app.get("/api/admin/users", response_model=AdminUsersResponse)
+def admin_users():
+    users = [
+        AdminUserOut(email=u["email"], name=u["name"], purchases=build_purchase_history(u["email"]).purchases)
+        for u in auth.list_users()
+    ]
+    return AdminUsersResponse(users=users)

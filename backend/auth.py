@@ -65,3 +65,8 @@ def get_user(token: str) -> dict | None:
     if not user:
         return None
     return {"email": user["email"], "name": user["name"]}
+
+
+def list_users() -> list[dict]:
+    """All registered users for the admin view - password hashes excluded."""
+    return [{"email": u["email"], "name": u["name"]} for u in _load().values()]

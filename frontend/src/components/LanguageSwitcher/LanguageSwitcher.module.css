@@ -1,0 +1,39 @@
+.switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  background: var(--color-pink-soft-2);
+  border-radius: var(--radius-pill);
+}
+
+.option {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-muted);
+  transition: color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.option:hover {
+  color: var(--color-ink);
+}
+
+.optionActive {
+  color: #fff;
+  background: var(--gradient-brand);
+  box-shadow: var(--shadow-brand);
+}
+
+.optionActive:hover {
+  color: #fff;
+}
+
+@media (max-width: 520px) {
+  .option {
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+}

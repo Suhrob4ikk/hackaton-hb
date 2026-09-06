@@ -1,0 +1,129 @@
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 640px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 0 40px;
+  background:
+    radial-gradient(58% 50% at 10% 26%, rgba(252, 214, 228, 0.4) 0%, rgba(252, 214, 228, 0) 72%),
+    radial-gradient(52% 50% at 94% 36%, rgba(220, 202, 250, 0.28) 0%, rgba(220, 202, 250, 0) 72%),
+    linear-gradient(180deg, #fdf5f8 0%, #fcf7fb 55%, #fffdfc 100%);
+}
+
+.blobLeft,
+.blobRight {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blobLeft {
+  width: 380px;
+  height: 380px;
+  left: -140px;
+  top: -80px;
+  background: rgba(249, 205, 224, 0.4);
+}
+
+.blobRight {
+  width: 420px;
+  height: 420px;
+  right: -160px;
+  bottom: -140px;
+  background: rgba(205, 185, 246, 0.26);
+}
+
+.contentOuter {
+  position: relative;
+  z-index: 2;
+  order: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.content {
+  max-width: 600px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid var(--color-border);
+  color: var(--color-pink-deep);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.title {
+  font-size: clamp(2.4rem, 4.4vw, 4rem);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.titleLine1 {
+  display: block;
+  color: var(--color-ink);
+}
+
+.titleLine2 {
+  display: block;
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.description {
+  font-size: clamp(1rem, 1.1vw, 1.125rem);
+  color: var(--color-body);
+  max-width: 500px;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 30px;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-brand);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  box-shadow: var(--shadow-brand);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 16px 32px rgba(214, 72, 158, 0.34);
+}
+
+.cta:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 1024px) {
+  .hero {
+    min-height: 0;
+    flex-direction: column;
+    padding: 40px 0 32px;
+  }
+}

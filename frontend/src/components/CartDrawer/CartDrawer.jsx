@@ -65,7 +65,11 @@ function CartDrawer() {
                     className={styles.itemImage}
                     style={{ background: product.image_url ? undefined : gradientForId(product.id) }}
                   >
-                    {!product.image_url && product.title.charAt(0).toUpperCase()}
+                    {product.image_url ? (
+                      <img src={product.image_url} alt={product.title} />
+                    ) : (
+                      product.title.charAt(0).toUpperCase()
+                    )}
                   </span>
                   <div className={styles.itemInfo}>
                     <p className={styles.itemTitle}>{product.title}</p>

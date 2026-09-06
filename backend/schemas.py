@@ -60,3 +60,5 @@ class CheckoutRequest(BaseModel):
 
 class CheckoutResponse(BaseModel):
     success: bool = True
+class CatalogTopResponse(BaseModel):
+    groups: dict[str, list[ProductOut]]

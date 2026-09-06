@@ -1,7 +1,9 @@
+import { useLanguage } from '../../context/LanguageContext.jsx'
 import ProductCard from '../ProductCard/ProductCard.jsx'
 import styles from './ChatMessage.module.css'
 
 function ChatMessage({ message, onAddToCart, onCheaper, addedProductIds, cheaperLoadingId }) {
+  const { t } = useLanguage()
   const isUser = message.role === 'user'
 
   return (
@@ -28,6 +30,7 @@ function ChatMessage({ message, onAddToCart, onCheaper, addedProductIds, cheaper
 
       {message.products?.length > 0 && (
         <div className={styles.products}>
+          <p className={styles.productsLabel}>{t.ai.recommendationsLabel}</p>
           {message.products.map((product) => (
             <ProductCard
               key={product.id}

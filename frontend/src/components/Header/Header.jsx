@@ -10,7 +10,7 @@ function Header() {
 
   const navItems = [
     { key: 'home', label: t.nav.home, href: '#top', active: true },
-    { key: 'catalog', label: t.nav.catalog, href: '#categories' },
+    { key: 'catalog', label: t.nav.catalog, href: '#/catalog' },
     { key: 'about', label: t.nav.about, href: '#benefits' },
     { key: 'contacts', label: t.nav.contacts, href: '#footer' },
   ]

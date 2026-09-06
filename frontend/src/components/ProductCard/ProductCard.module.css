@@ -81,12 +81,16 @@
 .addButton {
   flex: 1;
   height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   border-radius: var(--radius-pill);
   background: var(--gradient-brand);
   color: #fff;
   font-size: 13px;
   font-weight: 600;
-  transition: filter 0.2s ease, transform 0.2s ease;
+  transition: filter 0.2s ease, transform 0.2s ease, background 0.2s ease;
 }
 
 .addButton:hover {

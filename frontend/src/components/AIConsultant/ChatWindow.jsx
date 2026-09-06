@@ -4,7 +4,8 @@ import { useCart } from '../../context/CartContext.jsx'
 import { sendChatMessage, getCheaperAlternative } from '../../services/chatService.js'
 import ChatMessage from '../ChatMessage/ChatMessage.jsx'
 import ChatInput from '../ChatInput/ChatInput.jsx'
-import { IconRobot, IconClose } from '../icons/Icons.jsx'
+import ChatWelcome from './ChatWelcome.jsx'
+import { IconSparkle, IconClose } from '../icons/Icons.jsx'
 import styles from './ChatWindow.module.css'
 
 let messageIdCounter = 0
@@ -21,14 +22,6 @@ function ChatWindow({ onClose }) {
   const [addedProductIds, setAddedProductIds] = useState(new Set())
   const [cheaperLoadingId, setCheaperLoadingId] = useState(null)
   const messagesEndRef = useRef(null)
-  const seededRef = useRef(false)
-
-  useEffect(() => {
-    if (seededRef.current) return
-    seededRef.current = true
-    setMessages([{ id: nextId(), role: 'assistant', text: t.ai.greeting }])
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
@@ -84,36 +77,38 @@ function ChatWindow({ onClose }) {
   }
 
   return (
-    <section className={styles.panel} role="dialog" aria-label={t.ai.brand}>
+    <section className={styles.panel} role="dialog" aria-label={`${t.ai.brand} — ${t.ai.role}`}>
       <header className={styles.header}>
-        <span className={styles.avatar}>
-          <IconRobot width={22} height={22} />
-          <span className={styles.onlineDot} aria-hidden="true" />
+        <span className={styles.avatar} aria-hidden="true">
+          <IconSparkle width={18} height={18} />
         </span>
         <div className={styles.titleBlock}>
           <p className={styles.brandName}>{t.ai.brand}</p>
-          <p className={styles.status}>
-            <span className={styles.statusDot} aria-hidden="true" />
-            {t.ai.online}
-          </p>
+          <p className={styles.role}>{t.ai.role}</p>
         </div>
         <button type="button" className={styles.closeButton} aria-label={t.ai.closeChat} onClick={onClose}>
-          <IconClose width={18} height={18} />
+          <IconClose width={16} height={16} />
         </button>
       </header>
 
       <div className={styles.messages}>
-        {messages.map((message) => (
-          <ChatMessage
-            key={message.id}
-            message={message}
-            onAddToCart={handleAddToCart}
-            onCheaper={handleCheaper}
-            addedProductIds={addedProductIds}
-            cheaperLoadingId={cheaperLoadingId}
-          />
-        ))}
-        <div ref={messagesEndRef} />
+        {messages.length === 0 ? (
+          <ChatWelcome onQuickAction={handleSend} />
+        ) : (
+          <>
+            {messages.map((message) => (
+              <ChatMessage
+                key={message.id}
+                message={message}
+                onAddToCart={handleAddToCart}
+                onCheaper={handleCheaper}
+                addedProductIds={addedProductIds}
+                cheaperLoadingId={cheaperLoadingId}
+              />
+            ))}
+            <div ref={messagesEndRef} />
+          </>
+        )}
       </div>
 
       <ChatInput onSend={handleSend} disabled={isSending} />

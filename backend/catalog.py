@@ -40,6 +40,18 @@ DEPLETION_RULES = [
 
 DEFAULT_DEPLETION = (60, None)
 
+# Maps the 5 category tiles shown on the homepage to the top-level (or
+# second-level) node name in catalog.json's `categories` tree. Every leaf
+# name found under that node is considered part of the group when matching
+# a product's flat `category` string.
+GROUP_ROOTS = {
+    "face": "Для лица",
+    "hair": "Волосы",
+    "makeup": "Макияж",
+    "body": "Для тела",
+    "fragrance": "Парфюмерия",
+}
+
 
 def format_volume(volume: dict | None) -> str | None:
     if not volume:
@@ -95,9 +107,48 @@ class Catalog:
         self.categories = data["categories"]
         self.products: list[dict] = data["products"]
         self.by_id: dict[str, dict] = {p["id"]: p for p in self.products}
+        self._category_to_group = self._build_category_to_group()
+
+    def _build_category_to_group(self) -> dict[str, str]:
+        def find_node(nodes: list[dict], name: str) -> dict | None:
+            for node in nodes:
+                if node["name"] == name:
+                    return node
+                found = find_node(node.get("childrens") or [], name)
+                if found:
+                    return found
+            return None
+
+        def collect_names(node: dict) -> set[str]:
+            names = {node["name"].lower()}
+            for child in node.get("childrens") or []:
+                names |= collect_names(child)
+            return names
+
+        mapping: dict[str, str] = {}
+        for group, root_name in GROUP_ROOTS.items():
+            node = find_node(self.categories, root_name)
+            if not node:
+                continue
+            for name in collect_names(node):
+                mapping[name] = group
+        return mapping
 
     def get(self, product_id: str) -> dict | None:
         return self.by_id.get(str(product_id))
+
+    def top_products_by_group(self, limit: int = 8) -> dict[str, list[dict]]:
+        groups: dict[str, list[dict]] = {g: [] for g in GROUP_ROOTS}
+        for product in self.products:
+            group = self._category_to_group.get((product.get("category") or "").lower())
+            if group and product.get("in_stock", 0) > 0:
+                groups[group].append(product)
+
+        result: dict[str, list[dict]] = {}
+        for group, items in groups.items():
+            items.sort(key=lambda p: (p.get("is_hit", False), p.get("number_of_sales", 0)), reverse=True)
+            result[group] = [self.to_public(p) for p in items[:limit]]
+        return result
 
     def to_public(self, product: dict, reason: str = "") -> dict:
         return {

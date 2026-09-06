@@ -1,12 +1,17 @@
 import logging
 from datetime import datetime, timezone
+import random
+from datetime import datetime, timezone
+from typing import Literal
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend import auth, purchases
 from backend.ai import run_chat_turn
 from backend.catalog import catalog, estimate_depletion, estimate_depletion_days
+from backend.catalog import catalog
+from backend.pdf_instructions import generate_instruction_pdf
 from backend.schemas import (
     AdminUserOut,
     AdminUsersResponse,
@@ -16,6 +21,7 @@ from backend.schemas import (
     CartAddRequest,
     CartItemOut,
     CartResponse,
+    CatalogTopResponse,
     ChatRequest,
     ChatResponse,
     CheckoutRequest,
@@ -29,6 +35,11 @@ from backend.schemas import (
 from backend.sessions import get_session
 
 logger = logging.getLogger("hb-ai")
+
+
+def generate_order_id() -> str:
+    year = datetime.now(timezone.utc).year
+    return f"HB-{year}-{random.randint(0, 99999):05d}"
 
 app = FastAPI(title="HAYAT BEAUTY AI Consultant API")
 
@@ -85,6 +96,10 @@ def build_purchase_history(email: str) -> PurchaseHistoryResponse:
         ))
     items.sort(key=lambda p: p.purchased_at, reverse=True)
     return PurchaseHistoryResponse(purchases=items)
+@app.get("/api/catalog/top", response_model=CatalogTopResponse)
+def catalog_top(limit: int = 8):
+    groups = catalog.top_products_by_group(limit=limit)
+    return CatalogTopResponse(groups={g: [ProductOut(**p) for p in items] for g, items in groups.items()})
 
 
 @app.post("/api/chat", response_model=ChatResponse)
@@ -184,3 +199,46 @@ def admin_users():
         for u in auth.list_users()
     ]
     return AdminUsersResponse(users=users)
+    snapshot = build_cart_response(session)
+    if not snapshot.cart:
+        raise HTTPException(status_code=400, detail="Cart is empty")
+
+    order_id = generate_order_id()
+    created_at = datetime.now(timezone.utc).isoformat()
+    session.last_order = {
+        "id": order_id,
+        "items": [item.model_dump() for item in snapshot.cart],
+        "total": snapshot.total,
+        "created_at": created_at,
+        "status": "completed",
+    }
+    session.cart.clear()
+
+    return CheckoutResponse(
+        success=True,
+        order_id=order_id,
+        total=snapshot.total,
+        items=snapshot.cart,
+        created_at=created_at,
+    )
+
+
+@app.get("/api/order/instructions")
+def order_instructions(session_id: str, language: Literal["ru", "tj"] = "ru"):
+    session = get_session(session_id)
+    order = session.last_order
+    if not order:
+        raise HTTPException(status_code=404, detail="No completed order found for this session")
+
+    try:
+        pdf_bytes = generate_instruction_pdf(order, language, catalog)
+    except Exception:
+        logger.exception("Failed to generate instruction PDF")
+        raise HTTPException(status_code=500, detail="Failed to generate PDF")
+
+    filename = f"HAYAT-BEAUTY-instruction-{order['id']}-{language}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )

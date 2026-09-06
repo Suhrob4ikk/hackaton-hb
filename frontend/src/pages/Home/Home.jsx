@@ -1,4 +1,4 @@
-import Header from '../../components/Header/Header.jsx'
+import { useEffect } from 'react'
 import Hero from '../../components/Hero/Hero.jsx'
 import Benefits from '../../components/Benefits/Benefits.jsx'
 import Categories from '../../components/Categories/Categories.jsx'
@@ -9,6 +9,12 @@ import AuthModal from '../../components/AuthModal/AuthModal.jsx'
 import AccountPanel from '../../components/AccountPanel/AccountPanel.jsx'
 
 function Home() {
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '')
+    if (!hash) return
+    document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth' })
+  }, [])
+
   return (
     <div className="app">
       <Header />
@@ -23,6 +29,11 @@ function Home() {
       <AuthModal />
       <AccountPanel />
     </div>
+    <>
+      <Hero />
+      <Benefits />
+      <Categories />
+    </>
   )
 }
 

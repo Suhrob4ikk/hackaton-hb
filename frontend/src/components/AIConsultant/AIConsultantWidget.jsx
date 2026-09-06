@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { useChat } from '../../context/ChatContext.jsx'
 import ChatWindow from './ChatWindow.jsx'
-import { IconRobot, IconClose } from '../icons/Icons.jsx'
+import { IconSparkle, IconClose } from '../icons/Icons.jsx'
 import styles from './AIConsultantWidget.module.css'
 
 const BUTTON_SIZE = 64
@@ -18,7 +18,9 @@ function AIConsultantWidget() {
   const { isOpen, close, toggle } = useChat()
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [showBubble, setShowBubble] = useState(false)
+  const [panelAnchor, setPanelAnchor] = useState({ top: false, left: false })
 
+  const containerRef = useRef(null)
   const isDraggingRef = useRef(false)
   const movedRef = useRef(false)
   const suppressClickRef = useRef(false)
@@ -35,6 +37,23 @@ function AIConsultantWidget() {
 
   useEffect(() => {
     if (isOpen) setShowBubble(false)
+  }, [isOpen])
+
+  useLayoutEffect(() => {
+    if (!isOpen) return
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return
+    const spaceAbove = rect.top
+    const spaceBelow = window.innerHeight - rect.bottom
+    const spaceLeft = rect.left
+    const spaceRight = window.innerWidth - rect.right
+    setPanelAnchor({
+      top: spaceBelow > spaceAbove,
+      left: spaceRight > spaceLeft,
+    })
+    // Recomputed every time the panel opens (manual click or an auto-open
+    // triggered elsewhere, e.g. after a demo purchase completes) so the
+    // anchor always matches the button's current on-screen position.
   }, [isOpen])
 
   function handlePointerDown(event) {
@@ -90,12 +109,22 @@ function AIConsultantWidget() {
     toggle()
   }
 
+  const panelWrapClassName = [
+    styles.panelWrap,
+    isOpen ? styles.panelWrapOpen : '',
+    panelAnchor.top ? styles.panelWrapAnchorTop : '',
+    panelAnchor.left ? styles.panelWrapAnchorLeft : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
   return (
     <div
+      ref={containerRef}
       className={styles.container}
       style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}
     >
-      <div className={`${styles.panelWrap} ${isOpen ? styles.panelWrapOpen : ''}`}>
+      <div className={panelWrapClassName}>
         <ChatWindow onClose={close} />
       </div>
 
@@ -124,7 +153,7 @@ function AIConsultantWidget() {
           onPointerUp={handlePointerUp}
           onClick={handleTriggerClick}
         >
-          <IconRobot width={28} height={28} />
+          <IconSparkle width={24} height={24} />
           <span className={styles.onlineDot} aria-hidden="true" />
         </button>
       </div>

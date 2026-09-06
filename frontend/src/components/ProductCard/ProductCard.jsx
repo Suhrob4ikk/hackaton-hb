@@ -1,8 +1,9 @@
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { gradientForId } from '../../utils/placeholderColor.js'
+import { IconCheck } from '../icons/Icons.jsx'
 import styles from './ProductCard.module.css'
 
-function ProductCard({ product, onAddToCart, onCheaper, isAdded, isCheaperLoading }) {
+function ProductCard({ product, onAddToCart, onCheaper, isAdded, isCheaperLoading, hideCheaper = false }) {
   const { t } = useLanguage()
 
   if (!product) return null
@@ -36,16 +37,25 @@ function ProductCard({ product, onAddToCart, onCheaper, isAdded, isCheaperLoadin
           className={`${styles.addButton} ${isAdded ? styles.addButtonDone : ''}`}
           onClick={() => onAddToCart?.(product)}
         >
-          {isAdded ? t.ai.added : t.ai.addToCart}
+          {isAdded ? (
+            <>
+              <IconCheck width={14} height={14} />
+              {t.ai.added}
+            </>
+          ) : (
+            t.ai.addToCart
+          )}
         </button>
-        <button
-          type="button"
-          className={styles.cheaperButton}
-          onClick={() => onCheaper?.(product)}
-          disabled={isCheaperLoading}
-        >
-          {t.ai.cheaperOption}
-        </button>
+        {!hideCheaper && (
+          <button
+            type="button"
+            className={styles.cheaperButton}
+            onClick={() => onCheaper?.(product)}
+            disabled={isCheaperLoading}
+          >
+            {t.ai.cheaperOption}
+          </button>
+        )}
       </div>
     </article>
   )

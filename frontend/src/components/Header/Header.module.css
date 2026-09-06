@@ -1,0 +1,164 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(255, 253, 252, 0.92);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.inner {
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.mark {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  background: var(--gradient-brand);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.mark::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  background: #fff;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(45deg);
+}
+
+.brandText {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.brandText span {
+  font-weight: 400;
+  color: var(--color-body);
+  letter-spacing: 0.14em;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.navLink {
+  position: relative;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-body);
+  padding: 8px 2px;
+  transition: color 0.2s ease;
+}
+
+.navLink:hover {
+  color: var(--color-ink);
+}
+
+.navLinkActive {
+  color: var(--color-ink);
+}
+
+.navLinkActive::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-brand);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+}
+
+.iconButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--color-ink);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.iconButton:hover {
+  background: var(--color-pink-soft-2);
+  color: var(--color-pink-deep);
+}
+
+.cartBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-brand);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 2px #fff;
+}
+
+@media (max-width: 900px) {
+  .nav {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .brandText {
+    font-size: 14.5px;
+  }
+
+  .mark {
+    width: 24px;
+    height: 24px;
+  }
+
+  .inner {
+    gap: 8px;
+  }
+
+  .actions {
+    gap: 2px;
+  }
+
+  .iconButton {
+    width: 34px;
+    height: 34px;
+  }
+
+  .searchButton {
+    display: none;
+  }
+}

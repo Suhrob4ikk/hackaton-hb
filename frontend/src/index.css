@@ -1,0 +1,126 @@
+:root {
+  --color-bg: #fffdfc;
+  --color-bg-soft: #fdf2f6;
+  --color-lavender: #f4eefb;
+  --color-surface: #ffffff;
+
+  --color-ink: #241f38;
+  --color-body: #6c6579;
+  --color-muted: #948da3;
+
+  --color-pink: #ec4899;
+  --color-pink-deep: #d6488e;
+  --color-purple: #8b5cf6;
+  --color-pink-soft: #fbe6f0;
+  --color-pink-soft-2: #f6ecfa;
+
+  --gradient-brand: linear-gradient(135deg, #f0629e 0%, #a855f7 100%);
+  --gradient-brand-soft: linear-gradient(135deg, #fdf1f6 0%, #f5f0fb 100%);
+  --gradient-text: linear-gradient(120deg, #ec4899 0%, #9333ea 100%);
+
+  --color-border: #f0e6ec;
+  --color-online: #34d399;
+
+  --shadow-sm: 0 2px 8px rgba(120, 60, 110, 0.06);
+  --shadow-md: 0 8px 24px rgba(120, 60, 110, 0.1);
+  --shadow-lg: 0 20px 48px rgba(120, 60, 110, 0.16);
+  --shadow-brand: 0 12px 28px rgba(214, 72, 158, 0.28);
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  --header-height: 84px;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  background: var(--color-bg);
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: var(--header-height);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  color: var(--color-body);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+#root {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-sans);
+  color: var(--color-ink);
+  margin: 0;
+  font-weight: 600;
+}
+
+p {
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button, input, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-purple);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-pink-soft);
+  color: var(--color-pink-deep);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

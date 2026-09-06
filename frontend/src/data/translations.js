@@ -1,0 +1,197 @@
+// Tajik (tj) strings below are a draft machine-assisted translation and
+// should be reviewed by a native speaker before any public demo.
+const translations = {
+  ru: {
+    lang: { ru: 'РУС', tj: 'ТҶ' },
+    nav: {
+      home: 'Главная',
+      catalog: 'Каталог',
+      about: 'О нас',
+      contacts: 'Контакты',
+    },
+    header: {
+      search: 'Поиск',
+      cart: 'Корзина',
+      profile: 'Профиль',
+    },
+    hero: {
+      titleLine1: 'Подберём уход',
+      titleLine2: 'именно для вас',
+      description:
+        'Расскажите нашему AI-консультанту о своей коже, волосах или проблеме — и получите персональные рекомендации из каталога HAYAT BEAUTY.',
+      cta: 'Начать диалог',
+    },
+    benefits: {
+      heading: 'Почему выбирают нас',
+      items: [
+        {
+          id: 'personal',
+          icon: 'sparkle',
+          title: 'Персональные рекомендации',
+          description: 'Учитываем ваш тип кожи, волос и потребности',
+        },
+        {
+          id: 'trusted',
+          icon: 'shield',
+          title: 'Только проверенные товары',
+          description: 'Оригинальная продукция от лучших брендов',
+        },
+        {
+          id: 'care',
+          icon: 'heart',
+          title: 'Забота о вас',
+          description: 'Мы рядом на каждом этапе вашего ухода',
+        },
+        {
+          id: 'delivery',
+          icon: 'truck',
+          title: 'Удобная доставка',
+          description: 'Быстро по Душанбе и всей стране',
+        },
+      ],
+    },
+    categories: {
+      heading: 'Популярные категории',
+      viewAll: 'Смотреть все',
+      items: [
+        { id: 'face', title: 'Уход за лицом', subtitle: 'Забота о вашей коже', featured: true },
+        { id: 'hair', title: 'Уход за волосами' },
+        { id: 'makeup', title: 'Макияж' },
+        { id: 'body', title: 'Тело' },
+        { id: 'fragrance', title: 'Ароматы' },
+      ],
+    },
+    ai: {
+      brand: 'HAYAT BEAUTY AI',
+      online: 'Онлайн',
+      greeting: 'Привет! Я AI-консультант HAYAT BEAUTY. Чем могу помочь сегодня? 😊',
+      placeholder: 'Напишите свой вопрос...',
+      send: 'Отправить',
+      typing: 'AI печатает...',
+      addToCart: 'В корзину',
+      added: 'Добавлено ✓',
+      cheaperOption: 'Дешевле?',
+      cheaperUserLine: 'Это дороговато 😅',
+      closeChat: 'Закрыть чат',
+      closeBubble: 'Скрыть подсказку',
+    },
+    cart: {
+      title: 'Корзина',
+      empty: 'Корзина пока пуста',
+      total: 'Итого',
+      currency: 'сомони',
+      checkout: 'Оформить заказ',
+      checkingOut: 'Оформляем...',
+      remove: 'Удалить',
+      successTitle: 'Спасибо за заказ! 💗',
+      successText: 'Мы получили вашу заявку.',
+      continueShopping: 'Продолжить покупки',
+      close: 'Закрыть корзину',
+    },
+    footer: {
+      about:
+        'HAYAT BEAUTY — премиальная косметика в Душанбе с персональным AI-консультантом по красоте.',
+      contactsHeading: 'Контакты',
+      address: 'г. Душанбе, пр. Рудаки',
+      phone: '+992 000 00 00 00',
+      rights: 'Все права защищены.',
+    },
+  },
+  tj: {
+    lang: { ru: 'РУС', tj: 'ТҶ' },
+    nav: {
+      home: 'Асосӣ',
+      catalog: 'Феҳрист',
+      about: 'Дар бораи мо',
+      contacts: 'Тамос',
+    },
+    header: {
+      search: 'Ҷустуҷӯ',
+      cart: 'Сабад',
+      profile: 'Профил',
+    },
+    hero: {
+      titleLine1: 'Нигоҳубини',
+      titleLine2: 'махсус барои шумо',
+      description:
+        'Ба мушовири AI мо дар бораи пӯст, мӯй ё мушкилотатон нақл кунед — ва тавсияҳои шахсӣ аз феҳристи HAYAT BEAUTY гиред.',
+      cta: 'Оғози гуфтугӯ',
+    },
+    benefits: {
+      heading: 'Чаро моро интихоб мекунанд',
+      items: [
+        {
+          id: 'personal',
+          icon: 'sparkle',
+          title: 'Тавсияҳои шахсӣ',
+          description: 'Намуди пӯст, мӯй ва эҳтиёҷоти шуморо ба назар мегирем',
+        },
+        {
+          id: 'trusted',
+          icon: 'shield',
+          title: 'Танҳо маҳсулоти боэътимод',
+          description: 'Маҳсулоти аслӣ аз брендҳои беҳтарин',
+        },
+        {
+          id: 'care',
+          icon: 'heart',
+          title: 'Ғамхорӣ ба шумо',
+          description: 'Мо дар ҳар марҳилаи нигоҳубин ҳамроҳи шумоем',
+        },
+        {
+          id: 'delivery',
+          icon: 'truck',
+          title: 'Расонидани осон',
+          description: 'Тез дар Душанбе ва тамоми кишвар',
+        },
+      ],
+    },
+    categories: {
+      heading: 'Категорияҳои маъмул',
+      viewAll: 'Ҳамаро дидан',
+      items: [
+        { id: 'face', title: 'Нигоҳубини рӯй', subtitle: 'Ғамхорӣ ба пӯсти шумо', featured: true },
+        { id: 'hair', title: 'Нигоҳубини мӯй' },
+        { id: 'makeup', title: 'Ороиш' },
+        { id: 'body', title: 'Бадан' },
+        { id: 'fragrance', title: 'Атрҳо' },
+      ],
+    },
+    ai: {
+      brand: 'HAYAT BEAUTY AI',
+      online: 'Онлайн',
+      greeting: 'Салом! Ман мушовири AI-и HAYAT BEAUTY ҳастам. Имрӯз чӣ тавр кӯмак карда метавонам? 😊',
+      placeholder: 'Саволи худро нависед...',
+      send: 'Фиристодан',
+      typing: 'AI менависад...',
+      addToCart: 'Ба сабад',
+      added: 'Илова шуд ✓',
+      cheaperOption: 'Арзонтар?',
+      cheaperUserLine: 'Ин каме қиммат аст 😅',
+      closeChat: 'Пӯшидани чат',
+      closeBubble: 'Пинҳон кардан',
+    },
+    cart: {
+      title: 'Сабад',
+      empty: 'Сабад холӣ аст',
+      total: 'Ҳамагӣ',
+      currency: 'сомонӣ',
+      checkout: 'Расмият додани фармоиш',
+      checkingOut: 'Дар ҳоли расмиятдиҳӣ...',
+      remove: 'Хориҷ кардан',
+      successTitle: 'Ташаккур барои фармоиш! 💗',
+      successText: 'Мо дархости шуморо гирифтем.',
+      continueShopping: 'Идомаи харид',
+      close: 'Пӯшидани сабад',
+    },
+    footer: {
+      about: 'HAYAT BEAUTY — косметикаи премиум дар Душанбе бо мушовири шахсии зебоии AI.',
+      contactsHeading: 'Тамос',
+      address: 'ш. Душанбе, хиёбони Рӯдакӣ',
+      phone: '+992 000 00 00 00',
+      rights: 'Ҳама ҳуқуқҳо ҳифз шудаанд.',
+    },
+  },
+}
+
+export default translations

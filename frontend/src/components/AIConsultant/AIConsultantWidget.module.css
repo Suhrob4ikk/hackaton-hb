@@ -1,0 +1,147 @@
+.container {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 1000;
+}
+
+.panelWrap {
+  position: absolute;
+  bottom: 80px;
+  right: 0;
+  transform-origin: bottom right;
+  opacity: 0;
+  transform: scale(0.85) translateY(14px);
+  pointer-events: none;
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.panelWrapOpen {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+
+.triggerWrap {
+  position: relative;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.triggerWrapHidden {
+  opacity: 0;
+  transform: scale(0.85);
+  pointer-events: none;
+}
+
+.triggerButton {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--gradient-brand);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-brand);
+  touch-action: none;
+  cursor: grab;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.triggerButton::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--gradient-brand);
+  opacity: 0.55;
+  animation: pulseRing 2.6s ease-out infinite;
+}
+
+.triggerButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(214, 72, 158, 0.34);
+}
+
+@keyframes pulseRing {
+  0% {
+    transform: scale(1);
+    opacity: 0.45;
+  }
+  70% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+.onlineDot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--color-online);
+  border: 2.5px solid #fff;
+}
+
+.bubble {
+  position: absolute;
+  bottom: 78px;
+  right: 0;
+  width: 240px;
+  padding: 14px 16px;
+  background: var(--color-surface);
+  border-radius: 18px 18px 4px 18px;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--color-ink);
+  animation: bubbleIn 0.3s ease;
+}
+
+@keyframes bubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.bubbleClose {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+}
+
+.bubbleClose:hover {
+  background: var(--color-pink-soft-2);
+  color: var(--color-ink);
+}
+
+@media (max-width: 480px) {
+  .container {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .bubble {
+    width: min(220px, calc(100vw - 64px));
+  }
+}

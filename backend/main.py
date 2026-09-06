@@ -136,6 +136,11 @@ def cart_alternative(req: AlternativeRequest):
 @app.post("/api/cart/checkout", response_model=CheckoutResponse)
 def cart_checkout(req: CheckoutRequest):
     session = get_session(req.session_id)
+    if req.token and auth.get_user(req.token):
+        purchases.add_purchases(
+            req.token,
+            [{"product_id": pid, "quantity": qty} for pid, qty in session.cart.items()],
+        )
     session.cart.clear()
     return CheckoutResponse(success=True)
 

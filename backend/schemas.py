@@ -56,6 +56,7 @@ class AlternativeResponse(BaseModel):
 class CheckoutRequest(BaseModel):
     session_id: str
     items: Optional[list[dict]] = None
+    token: Optional[str] = None
 
 
 class CheckoutResponse(BaseModel):

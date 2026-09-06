@@ -1,9 +1,11 @@
 import { createContext, useContext, useMemo, useState, useCallback } from 'react'
 import * as cartService from '../services/cartService.js'
+import { useAuth } from './AuthContext.jsx'
 
 const CartContext = createContext(null)
 
 export function CartProvider({ children }) {
+  const { user } = useAuth()
   const [items, setItems] = useState([])
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isCheckingOut, setIsCheckingOut] = useState(false)
@@ -41,13 +43,13 @@ export function CartProvider({ children }) {
   const checkout = useCallback(async () => {
     setIsCheckingOut(true)
     try {
-      await cartService.checkout({ items })
+      await cartService.checkout({ items, token: user?.token })
       setOrderSuccess(true)
       setItems([])
     } finally {
       setIsCheckingOut(false)
     }
-  }, [items])
+  }, [items, user])
 
   const resetOrderSuccess = useCallback(() => setOrderSuccess(false), [])
 

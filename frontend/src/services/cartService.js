@@ -9,9 +9,9 @@ export async function addToCart({ productId, quantity = 1 }) {
   return mockAddToCart({ productId, quantity })
 }
 
-export async function checkout({ items }) {
+export async function checkout({ items, token }) {
   if (IS_BACKEND_CONFIGURED) {
-    return apiCheckout({ session_id: sessionId, items })
+    return apiCheckout({ session_id: sessionId, items, token: token || undefined })
   }
   return mockCheckout({ items })
 }

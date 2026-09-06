@@ -46,3 +46,7 @@ export function apiCheckout(payload) {
     body: JSON.stringify(payload),
   })
 }
+
+export function apiGetCatalogTop({ limit = 8 } = {}) {
+  return request(`/api/catalog/top?limit=${encodeURIComponent(limit)}`)
+}

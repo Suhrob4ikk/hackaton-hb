@@ -51,3 +51,7 @@ class AlternativeRequest(BaseModel):
 
 class AlternativeResponse(BaseModel):
     alternative: Optional[ProductOut] = None
+
+
+class CatalogTopResponse(BaseModel):
+    groups: dict[str, list[ProductOut]]

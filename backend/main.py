@@ -11,6 +11,7 @@ from backend.schemas import (
     CartAddRequest,
     CartItemOut,
     CartResponse,
+    CatalogTopResponse,
     ChatRequest,
     ChatResponse,
     ProductOut,
@@ -49,6 +50,12 @@ def build_cart_response(session) -> CartResponse:
             subtotal=subtotal,
         ))
     return CartResponse(cart=items, total=round(total, 2))
+
+
+@app.get("/api/catalog/top", response_model=CatalogTopResponse)
+def catalog_top(limit: int = 8):
+    groups = catalog.top_products_by_group(limit=limit)
+    return CatalogTopResponse(groups={g: [ProductOut(**p) for p in items] for g, items in groups.items()})
 
 
 @app.post("/api/chat", response_model=ChatResponse)

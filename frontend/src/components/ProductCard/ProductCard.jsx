@@ -2,7 +2,7 @@ import { useLanguage } from '../../context/LanguageContext.jsx'
 import { gradientForId } from '../../utils/placeholderColor.js'
 import styles from './ProductCard.module.css'
 
-function ProductCard({ product, onAddToCart, onCheaper, isAdded, isCheaperLoading }) {
+function ProductCard({ product, onAddToCart, onCheaper, isAdded, isCheaperLoading, hideCheaper = false }) {
   const { t } = useLanguage()
 
   if (!product) return null
@@ -38,14 +38,16 @@ function ProductCard({ product, onAddToCart, onCheaper, isAdded, isCheaperLoadin
         >
           {isAdded ? t.ai.added : t.ai.addToCart}
         </button>
-        <button
-          type="button"
-          className={styles.cheaperButton}
-          onClick={() => onCheaper?.(product)}
-          disabled={isCheaperLoading}
-        >
-          {t.ai.cheaperOption}
-        </button>
+        {!hideCheaper && (
+          <button
+            type="button"
+            className={styles.cheaperButton}
+            onClick={() => onCheaper?.(product)}
+            disabled={isCheaperLoading}
+          >
+            {t.ai.cheaperOption}
+          </button>
+        )}
       </div>
     </article>
   )

@@ -61,6 +61,13 @@ const translations = {
         { id: 'fragrance', title: 'Ароматы' },
       ],
     },
+    catalogPage: {
+      heading: 'Каталог',
+      subheading: 'Топ товаров в каждой категории',
+      loading: 'Загружаем товары...',
+      error: 'Не получилось загрузить каталог. Попробуйте обновить страницу.',
+      empty: 'В этой категории пока нет товаров.',
+    },
     ai: {
       brand: 'HAYAT BEAUTY AI',
       online: 'Онлайн',
@@ -156,6 +163,13 @@ const translations = {
         { id: 'body', title: 'Бадан' },
         { id: 'fragrance', title: 'Атрҳо' },
       ],
+    },
+    catalogPage: {
+      heading: 'Феҳрист',
+      subheading: 'Беҳтарин маҳсулот дар ҳар категория',
+      loading: 'Маҳсулот бор карда мешавад...',
+      error: 'Феҳрист бор нашуд. Лутфан саҳифаро аз нав бор кунед.',
+      empty: 'Дар ин категория ҳоло маҳсулот нест.',
     },
     ai: {
       brand: 'HAYAT BEAUTY AI',

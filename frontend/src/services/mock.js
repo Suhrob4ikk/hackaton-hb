@@ -47,3 +47,19 @@ export async function mockCheckout() {
   await delay(900)
   return { success: true }
 }
+
+export async function mockGetCatalogTop() {
+  await delay(400)
+  const skinProducts = mockProducts.filter((product) => product.category !== 'hair')
+  const hairProducts = mockProducts.filter((product) => product.category === 'hair')
+
+  return {
+    groups: {
+      face: skinProducts,
+      hair: hairProducts,
+      makeup: skinProducts.slice().reverse(),
+      body: skinProducts,
+      fragrance: hairProducts,
+    },
+  }
+}

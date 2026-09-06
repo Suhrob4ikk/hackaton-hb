@@ -10,6 +10,14 @@ const PLACEHOLDER_GRADIENTS = {
   fragrance: 'linear-gradient(135deg, #e9d5ff 0%, #fbcfe8 55%, #fbe6f0 100%)',
 }
 
+const CATEGORY_IMAGES = {
+  face: 'https://hbshop.tj/media/categories/Frame_1931-min.png',
+  hair: 'https://hbshop.tj/media/categories/Frame_1905-min.png',
+  makeup: 'https://hbshop.tj/media/categories/Frame_2248.png',
+  body: 'https://hbshop.tj/media/categories/Frame_1932-min_1.png',
+  fragrance: 'https://hbshop.tj/media/categories/perfume-min.png',
+}
+
 function Categories() {
   const { t } = useLanguage()
 
@@ -20,7 +28,7 @@ function Categories() {
           <h2 id="categories-title" className={styles.heading}>
             {t.categories.heading}
           </h2>
-          <a className={styles.viewAll} href="#categories">
+          <a className={styles.viewAll} href="#/catalog">
             {t.categories.viewAll}
             <IconArrowRight width={16} height={16} />
           </a>
@@ -30,14 +38,14 @@ function Categories() {
           {t.categories.items.map((category) => (
             <a
               className={`${styles.card} ${category.featured ? styles.cardFeatured : ''}`}
-              href="#categories"
+              href={`#/catalog/${category.id}`}
               key={category.id}
             >
               <span
                 className={styles.visual}
                 style={{ background: PLACEHOLDER_GRADIENTS[category.id] ?? PLACEHOLDER_GRADIENTS.face }}
               >
-                {category.image && <img src={category.image} alt="" />}
+                {CATEGORY_IMAGES[category.id] && <img src={CATEGORY_IMAGES[category.id]} alt="" />}
               </span>
               <span className={`${styles.body} ${category.featured ? styles.bodyFeatured : ''}`}>
                 <span className={styles.title}>{category.title}</span>

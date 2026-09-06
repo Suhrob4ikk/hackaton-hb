@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime, timezone
 import random
 from datetime import datetime, timezone
 from typing import Literal
@@ -6,12 +7,17 @@ from typing import Literal
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend import auth, purchases
 from backend.ai import run_chat_turn
+from backend.catalog import catalog, estimate_depletion, estimate_depletion_days
 from backend.catalog import catalog
 from backend.pdf_instructions import generate_instruction_pdf
 from backend.schemas import (
+    AdminUserOut,
+    AdminUsersResponse,
     AlternativeRequest,
     AlternativeResponse,
+    AuthResponse,
     CartAddRequest,
     CartItemOut,
     CartResponse,
@@ -20,7 +26,11 @@ from backend.schemas import (
     ChatResponse,
     CheckoutRequest,
     CheckoutResponse,
+    LoginRequest,
     ProductOut,
+    PurchaseHistoryResponse,
+    PurchaseOut,
+    RegisterRequest,
 )
 from backend.sessions import get_session
 
@@ -63,6 +73,29 @@ def build_cart_response(session) -> CartResponse:
     return CartResponse(cart=items, total=round(total, 2))
 
 
+def build_purchase_history(email: str) -> PurchaseHistoryResponse:
+    records = purchases.get_purchases(email)
+    items = []
+    for record in records:
+        product = catalog.get(record["product_id"])
+        if not product:
+            continue
+        purchased_at = datetime.fromisoformat(record["purchased_at"])
+        days_since = (datetime.now(timezone.utc) - purchased_at).days
+        items.append(PurchaseOut(
+            id=product["id"],
+            title=product["title"],
+            price=product["price"],
+            volume=catalog.to_public(product)["volume"],
+            image_url=(product.get("images") or [None])[0],
+            quantity=record["quantity"],
+            purchased_at=record["purchased_at"],
+            depletion_estimate=estimate_depletion(product["category"], product.get("volume")),
+            depletion_days=estimate_depletion_days(product["category"], product.get("volume")),
+            days_since_purchase=max(days_since, 0),
+        ))
+    items.sort(key=lambda p: p.purchased_at, reverse=True)
+    return PurchaseHistoryResponse(purchases=items)
 @app.get("/api/catalog/top", response_model=CatalogTopResponse)
 def catalog_top(limit: int = 8):
     groups = catalog.top_products_by_group(limit=limit)
@@ -125,6 +158,47 @@ def cart_alternative(req: AlternativeRequest):
 @app.post("/api/cart/checkout", response_model=CheckoutResponse)
 def cart_checkout(req: CheckoutRequest):
     session = get_session(req.session_id)
+    if req.token and auth.get_user(req.token):
+        purchases.add_purchases(
+            req.token,
+            [{"product_id": pid, "quantity": qty} for pid, qty in session.cart.items()],
+        )
+    session.cart.clear()
+    return CheckoutResponse(success=True)
+
+
+@app.post("/api/auth/register", response_model=AuthResponse)
+def auth_register(req: RegisterRequest):
+    try:
+        result = auth.register(req.email, req.password, req.name)
+    except auth.AuthError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+    return AuthResponse(**result)
+
+
+@app.post("/api/auth/login", response_model=AuthResponse)
+def auth_login(req: LoginRequest):
+    try:
+        result = auth.login(req.email, req.password)
+    except auth.AuthError as exc:
+        raise HTTPException(status_code=401, detail=str(exc))
+    return AuthResponse(**result)
+
+
+@app.get("/api/account/purchases", response_model=PurchaseHistoryResponse)
+def account_purchases(token: str):
+    if not auth.get_user(token):
+        raise HTTPException(status_code=401, detail="Не авторизован")
+    return build_purchase_history(token)
+
+
+@app.get("/api/admin/users", response_model=AdminUsersResponse)
+def admin_users():
+    users = [
+        AdminUserOut(email=u["email"], name=u["name"], purchases=build_purchase_history(u["email"]).purchases)
+        for u in auth.list_users()
+    ]
+    return AdminUsersResponse(users=users)
     snapshot = build_cart_response(session)
     if not snapshot.cart:
         raise HTTPException(status_code=400, detail="Cart is empty")

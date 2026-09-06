@@ -224,6 +224,15 @@ export function IconPlus(props) {
   )
 }
 
+export function IconBell(props) {
+  return (
+    <svg {...base(props)}>
+      <path d="M6 10a6 6 0 1 1 12 0c0 4 1.4 5.2 1.4 5.2H4.6S6 14 6 10Z" />
+      <path d="M10 18.5a2 2 0 0 0 4 0" />
+    </svg>
+  )
+}
+
 export function IconTrash(props) {
   return (
     <svg {...base(props)}>

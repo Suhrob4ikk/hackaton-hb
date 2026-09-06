@@ -1,0 +1,110 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(36, 31, 56, 0.4);
+  z-index: 1200;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(360px, calc(100vw - 32px));
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 28px 24px 24px;
+  z-index: 1201;
+}
+
+.closeButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-pill);
+  background: var(--color-pink-soft);
+  color: var(--color-ink);
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  background: var(--color-bg-soft);
+  border-radius: var(--radius-pill);
+  padding: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-body);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.tabActive {
+  background: var(--gradient-brand);
+  color: #fff;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-body);
+}
+
+.field input {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 14.5px;
+  color: var(--color-ink);
+  font-family: inherit;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--color-pink);
+}
+
+.error {
+  margin: 0;
+  font-size: 13px;
+  color: #b3261e;
+  background: #fdecec;
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+
+.submitButton {
+  margin-top: 4px;
+  padding: 12px 0;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-brand);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14.5px;
+  box-shadow: var(--shadow-brand);
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+}

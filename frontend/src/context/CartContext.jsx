@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useState, useCallback, useEffect, useRef } from 'react'
 import * as cartService from '../services/cartService.js'
+import { useAuth } from './AuthContext.jsx'
 
 const CartContext = createContext(null)
 const LAST_ORDER_KEY = 'hb_last_order'
@@ -23,6 +24,7 @@ function persistOrder(order) {
 }
 
 export function CartProvider({ children }) {
+  const { user } = useAuth()
   const [items, setItems] = useState([])
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [isReviewing, setIsReviewing] = useState(false)
@@ -72,6 +74,7 @@ export function CartProvider({ children }) {
     if (items.length === 0) return
     setIsCheckingOut(true)
     try {
+      await cartService.checkout({ items, token: user?.token })
       const response = await cartService.checkout({ items })
       const order = {
         id: response.order_id,
@@ -94,7 +97,7 @@ export function CartProvider({ children }) {
     } finally {
       setIsCheckingOut(false)
     }
-  }, [items])
+  }, [items, user])
 
   const resetOrderSuccess = useCallback(() => {
     clearTimeout(autoCloseTimerRef.current)

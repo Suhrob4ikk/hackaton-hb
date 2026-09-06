@@ -5,6 +5,7 @@ import Footer from './components/Footer/Footer.jsx'
 import AIConsultantWidget from './components/AIConsultant/AIConsultantWidget.jsx'
 import CartDrawer from './components/CartDrawer/CartDrawer.jsx'
 import { LanguageProvider } from './context/LanguageContext.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
 import { CartProvider } from './context/CartContext.jsx'
 import { ChatProvider } from './context/ChatContext.jsx'
 import { useHashRoute } from './hooks/useHashRoute.js'
@@ -15,6 +16,13 @@ function App() {
 
   return (
     <LanguageProvider>
+      <AuthProvider>
+        <CartProvider>
+          <ChatProvider>
+            <Home />
+          </ChatProvider>
+        </CartProvider>
+      </AuthProvider>
       <CartProvider>
         <ChatProvider>
           <div className="app">

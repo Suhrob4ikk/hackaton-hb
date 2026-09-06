@@ -1,11 +1,11 @@
 .panel {
   display: flex;
   flex-direction: column;
-  width: min(400px, calc(100vw - 24px));
-  height: min(660px, calc(100vh - 120px));
+  width: min(376px, calc(100vw - 24px));
+  height: min(600px, calc(100vh - 120px));
   background: var(--color-surface);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
   border: 1px solid var(--color-border);
 }
@@ -13,35 +13,24 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 16px;
-  background: var(--gradient-brand-soft);
+  gap: 11px;
+  padding: 16px 14px 16px 18px;
+  background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
   flex-shrink: 0;
 }
 
 .avatar {
   position: relative;
-  width: 40px;
-  height: 40px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  background: var(--gradient-brand);
-  color: #fff;
+  background: var(--gradient-brand-soft);
+  color: var(--color-pink-deep);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-}
-
-.onlineDot {
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 11px;
-  height: 11px;
-  border-radius: 50%;
-  background: var(--color-online);
-  border: 2px solid #fff;
 }
 
 .titleBlock {
@@ -50,24 +39,19 @@
 }
 
 .brandName {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
+  letter-spacing: 0.02em;
   color: var(--color-ink);
 }
 
-.status {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12.5px;
-  color: var(--color-body);
-}
-
-.statusDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--color-online);
+.role {
+  margin-top: 1px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-pink-deep);
 }
 
 .closeButton {
@@ -78,12 +62,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-body);
+  color: var(--color-muted);
   transition: background 0.2s ease, color 0.2s ease;
 }
 
 .closeButton:hover {
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--color-pink-soft-2);
   color: var(--color-ink);
 }
 
@@ -93,5 +77,35 @@
   padding: 18px 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-pink-soft) transparent;
+}
+
+.messages::-webkit-scrollbar {
+  width: 5px;
+}
+
+.messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: var(--color-pink-soft);
+  border-radius: var(--radius-pill);
+}
+
+@media (max-width: 640px) {
+  .panel {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+    border: none;
+  }
+
+  .header {
+    padding-top: max(16px, env(safe-area-inset-top));
+  }
 }

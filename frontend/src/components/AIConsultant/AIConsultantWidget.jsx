@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { useChat } from '../../context/ChatContext.jsx'
 import ChatWindow from './ChatWindow.jsx'
-import { IconRobot, IconClose } from '../icons/Icons.jsx'
+import { IconSparkle, IconClose } from '../icons/Icons.jsx'
 import styles from './AIConsultantWidget.module.css'
 
 const BUTTON_SIZE = 64
@@ -124,7 +124,7 @@ function AIConsultantWidget() {
           onPointerUp={handlePointerUp}
           onClick={handleTriggerClick}
         >
-          <IconRobot width={28} height={28} />
+          <IconSparkle width={24} height={24} />
           <span className={styles.onlineDot} aria-hidden="true" />
         </button>
       </div>

@@ -1,0 +1,96 @@
+.welcome {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 8px 6px 4px;
+  animation: welcomeIn 320ms ease-out;
+}
+
+@keyframes welcomeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mark {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gradient-brand-soft);
+  color: var(--color-pink-deep);
+  margin-bottom: 14px;
+}
+
+.title {
+  font-size: 16.5px;
+  font-weight: 700;
+  color: var(--color-ink);
+  letter-spacing: 0.01em;
+}
+
+.subtitle {
+  margin-top: 5px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-pink-deep);
+}
+
+.description {
+  max-width: 250px;
+  margin-top: 10px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--color-body);
+}
+
+.actions {
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.actionButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+}
+
+.actionButton svg {
+  color: var(--color-pink-deep);
+  flex-shrink: 0;
+}
+
+.actionButton:hover {
+  background: var(--color-pink-soft-2);
+  border-color: var(--color-pink-soft);
+}
+
+.actionButton:active {
+  transform: scale(0.97);
+}

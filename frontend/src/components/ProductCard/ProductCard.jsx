@@ -1,5 +1,6 @@
 import { useLanguage } from '../../context/LanguageContext.jsx'
 import { gradientForId } from '../../utils/placeholderColor.js'
+import { IconCheck } from '../icons/Icons.jsx'
 import styles from './ProductCard.module.css'
 
 function ProductCard({ product, onAddToCart, onCheaper, isAdded, isCheaperLoading, hideCheaper = false }) {
@@ -36,7 +37,14 @@ function ProductCard({ product, onAddToCart, onCheaper, isAdded, isCheaperLoadin
           className={`${styles.addButton} ${isAdded ? styles.addButtonDone : ''}`}
           onClick={() => onAddToCart?.(product)}
         >
-          {isAdded ? t.ai.added : t.ai.addToCart}
+          {isAdded ? (
+            <>
+              <IconCheck width={14} height={14} />
+              {t.ai.added}
+            </>
+          ) : (
+            t.ai.addToCart
+          )}
         </button>
         {!hideCheaper && (
           <button

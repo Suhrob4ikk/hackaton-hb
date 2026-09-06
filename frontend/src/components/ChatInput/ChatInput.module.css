@@ -1,30 +1,46 @@
 .form {
-  display: flex;
-  align-items: flex-end;
-  gap: 8px;
-  padding: 12px 14px;
+  padding: 12px 16px 16px;
   border-top: 1px solid var(--color-border);
   background: var(--color-surface);
+}
+
+.inputWrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  padding: 5px 5px 5px 16px;
+  border-radius: 22px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.inputWrap:focus-within {
+  border-color: var(--color-pink-soft);
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.07);
 }
 
 .input {
   flex: 1;
   min-width: 0;
-  min-height: 44px;
+  min-height: 40px;
   max-height: 84px;
-  padding: 11px 16px;
-  border-radius: 22px;
-  border: 1px solid var(--color-border);
-  background: var(--color-bg);
+  padding: 10px 0;
+  border: none;
+  background: transparent;
   font-size: 14px;
   line-height: 20px;
   font-family: inherit;
+  color: var(--color-ink);
   resize: none;
   overflow-y: auto;
-  transition: border-color 0.2s ease;
 
   scrollbar-width: thin;
   scrollbar-color: var(--color-pink) transparent;
+}
+
+.input::placeholder {
+  color: var(--color-muted);
 }
 
 .input::-webkit-scrollbar {
@@ -41,21 +57,20 @@
 }
 
 .input:focus-visible {
-  outline: 2px solid var(--color-purple);
-  outline-offset: 1px;
+  outline: none;
 }
 
 .sendButton {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: var(--gradient-brand);
   color: #fff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: filter 0.2s ease, transform 0.2s ease;
+  transition: filter 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
 }
 
 .sendButton:hover:not(:disabled) {
@@ -63,7 +78,17 @@
   transform: translateY(-1px);
 }
 
+.sendButton:active:not(:disabled) {
+  transform: translateY(0) scale(0.94);
+}
+
 .sendButton:disabled {
-  opacity: 0.5;
+  opacity: 0.35;
   cursor: default;
+}
+
+@media (max-width: 640px) {
+  .form {
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
 }
